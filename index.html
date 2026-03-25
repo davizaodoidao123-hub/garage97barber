@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="PT-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documento</title>
+    <p align="CENTER">CALCULADORA FALSA</p>
+    <style>
+                td, tr {
+            border: 1px solid black;
+        }
+        #texto {
+            background-color:rgb(212, 206, 206);
+            border: 1;
+            color:purple;
+        }
+        .buttonx {
+            width: 30px;
+            height: 25px;
+        }
+        .buttony {
+            width:    65px;
+            height:     25px;
+        }
+        .buttonx {
+            background-color:rgb(235, 232, 232);
+            color:purple;
+             border: none;
+        }
+        .buttony {
+            background-color: rgba(255, 255, 255, 0.959);
+            color:red;
+             border: none;
+                }
+    </style>
+</head>
+<body>
+   <table align="center">
+ 
+<tr>
+<td colspan="4" align="right"><p id="texto">0</p></td>
+</tr>
+ 
+<tr>
+<td><button class="buttonx" onclick="myclick(7)">7</button></td>
+<td><button class="buttonx" onclick="myclick(8)">8</button></td>
+<td><button class="buttonx" onclick="myclick(9)">9</button></td>
+<td><button class="buttonx" onclick="dividir()">÷ </button></td>
+</tr>
+ 
+<tr>
+<td><button class="buttonx" onclick="myclick(4)">4</button></td>
+<td><button class="buttonx" onclick="myclick(5)">5</button></td>
+<td><button class="buttonx" onclick="myclick(6)">6</button></td>
+<td><button class="buttonx" onclick="multip()">x</button></td>
+</tr>
+ 
+<tr>
+<td><button class="buttonx" onclick="myclick(1)">1</button></td>
+<td><button class="buttonx" onclick="myclick(2)">2</button></td>
+<td><button class="buttonx" onclick="myclick(3)">3</button></td>
+<td><button class="buttonx" onclick="somar()">+</button></td>
+</tr>
+ 
+<tr>
+<td><button class="buttonx" onclick="mylimpa()">C</button></td>
+<td><button class="buttonx" onclick="myclick(0)">0</button></td>
+<td><button class="buttonx" onclick="mydecimal()">,</button></td>
+<td><button class="buttonx" onclick="subtrai()">-</button></td>
+</tr>
+ 
+<tr>
+<td><button class="buttonx" onclick="maismenos()">+/-</button></td>
+<td colspan="2" align="center">
+<button class="buttony" onclick="igual()">=</button>
+</td>
+<td><button class="buttonx" onclick="backspace()">←</button></td>
+</tr>
+ 
+</table>
+ 
+<script>
+ 
+speechSynthesis.onvoiceschanged = function() {
+    speechSynthesis.getVoices();
+};
+ 
+let num1 = 0;
+let operacao = "";
+let novoNumero = false;
+ 
+function myclick(tecla){
+    if(document.getElementById('texto').innerText.length >= 9){
+        alert('Não pode mais números que isso !');
+    }
+    else{
+        if(novoNumero){
+            document.getElementById('texto').innerText = tecla;
+            novoNumero = false;
+        }
+        else if(document.getElementById('texto').innerText =='0'){
+            if(tecla!='0'){
+                document.getElementById('texto').innerText=tecla;
+            }
+        }
+        else{
+            document.getElementById('texto').innerHTML =
+            document.getElementById('texto').innerHTML + tecla;
+        }
+    }
+}
+ 
+function somar(){
+    num1 = parseFloat(document.getElementById("texto").innerText.replace(",","."));
+    operacao = "+";
+    novoNumero = true;
+}
+ 
+function subtrai(){
+    num1 = parseFloat(document.getElementById("texto").innerText.replace(",","."));
+    operacao = "-";
+    novoNumero = true;
+}
+ 
+function multip(){
+    num1 = parseFloat(document.getElementById("texto").innerText.replace(",","."));
+    operacao = "*";
+    novoNumero = true;
+}
+ 
+function dividir(){
+    num1 = parseFloat(document.getElementById("texto").innerText.replace(",","."));
+    operacao = "/";
+    novoNumero = true;
+}
+ 
+function igual(){
+    let num2 = parseFloat(document.getElementById("texto").innerText.replace(",","."));
+    let resultado = 0;
+ 
+    if(operacao == "+") resultado = num1 + num2;
+    if(operacao == "-") resultado = num1 - num2;
+    if(operacao == "*") resultado = num1 * num2;
+ 
+    if(operacao == "/"){
+        if(num2 == 0){
+            alert("Não pode dividir por zero");
+            return;
+        }
+        resultado = num1 / num2;
+    }
+ 
+    resultado = resultado.toFixed(1);
+ 
+    document.getElementById("texto").innerText = resultado.toString().replace(".",",");
+ 
+    novoNumero = true;
+ 
+    fale();
+}
+ 
+function mylimpa(){
+    document.getElementById("texto").innerText = "0";
+    num1 = 0;
+    operacao = "";
+}
+ 
+function mydecimal(){
+    let texto = document.getElementById("texto").innerText;
+ 
+    if(texto.indexOf(",") == -1){
+        document.getElementById("texto").innerText = texto + ",";
+    }
+}
+ 
+function maismenos(){
+    let valor = parseFloat(document.getElementById("texto").innerText.replace(",","."));
+    valor = valor * -1;
+    document.getElementById("texto").innerText = valor.toString().replace(".",",");
+}
+ 
+function backspace(){
+    let texto = document.getElementById("texto").innerText;
+    texto = texto.slice(0,-1);
+    if(texto == "") texto = "0";
+    document.getElementById("texto").innerText = texto;
+}
+ 
+function fale() {
+    var str = document.getElementById('texto').innerText;
+ 
+    const frase = new SpeechSynthesisUtterance(str);
+    frase.lang = "pt-BR";
+ 
+    let vozes = speechSynthesis.getVoices();
+ 
+    for(let i = 0; i < vozes.length; i++){
+        if(vozes[i].lang === "pt-BR"){
+            frase.voice = vozes[i];
+        }
+    }
+ 
+    speechSynthesis.speak(frase);
+}
+ 
+</script>
+ 
+</body>
+</html>
